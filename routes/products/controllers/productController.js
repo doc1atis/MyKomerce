@@ -1,5 +1,7 @@
 const Product = require("../models/Product");
 
+const paginate = require("../utils/pagination");
+
 module.exports = {
   getAllProducts: params => {
     return new Promise((resolve, reject) => {
@@ -40,23 +42,11 @@ module.exports = {
         .exec()
         .then(products => {
           resolve(products);
-        })
-        .catch(err => {
-          let errors = {};
-          errors.status = 500;
-          errors.message = err;
-
-          reject(errors);
         });
     });
   },
-  deleProductById: async id => {
-    try {
-      const deletedObject = await Product.finByIdAndRemove(id);
-      return deletedObject;
-    } catch (error) {
-      console.log(error);
-      return error;
-    }
+  getPageIfUserLoggedIn: (req, res, next) => {
+    if (req.user) paginate(req, res, next);
+    else res.render("index");
   }
 };

@@ -25,7 +25,7 @@ const ProductSchema = new mongoose.Schema({
   }
 });
 ProductSchema.plugin(mongoosastic, {
-  hosts: [process.env.BONSAI_URL || "localhoast:9200"],
+  hosts: [process.env.BONSAI_URL || "localhost:9200"],
 
   populate: [{ path: "category" }]
 });

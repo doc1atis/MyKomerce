@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <% include ../partials/head %>
+  <body>
+    <% include ../partials/nav %>
+    <br />
+
+    <h3>Results for <span style="color: red;"><%=word%></span></h3>
+
+    <div class="row">
+      <%for(let prod of data){%>
+      <div class="col">
+        <div class="card" style="width: 18rem;">
+          <a href="/api/product/">
+            <img
+              class="card-img-top"
+              src="<%=prod._source.image%>"
+              alt="Card image cap"
+            />
+          </a>
+          <div class="card-body">
+            <h5 class="card-title">Name:<%=prod._source.name%></h5>
+            <p class="card-text">Category:<%=prod._source.category.name%></p>
+            <p class="card-text">Price: $<%=prod._source.price%></p>
+            <a href="/api/product/" class="btn btn-primary">Shop</a>
+          </div>
+        </div>
+      </div>
+      <%}%>
+    </div>
+    <%if(data.length === 0){%>
+    <h3>Search not found</h3>
+    <%}%> <% include ../partials/footer %>
+  </body>
+</html>

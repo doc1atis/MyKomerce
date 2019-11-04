@@ -11,7 +11,7 @@ const paginate = (req, res) => {
     .exec()
     .then(products => products)
     .then(products => {
-      Product.count()
+      Product.countDocuments()
         .exec()
         .then(count => {
           res.render("products/product-main", {

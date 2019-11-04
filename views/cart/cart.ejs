@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<% include ../partials/head %>
+<body>
+    <% include ../partials/nav %>
+    <div class="container" style="margin-top: 10%">
+        <%if(success.length){%>
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    
+                </button>
+                <%=success[0]%>
+            </div>
+            <%}%>
+        <table id="cart" class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th style="width:50%">cartItem</th>
+                    <th style="width:10%">Price</th>
+                    <th style="width:8%">Quantity</th>
+                    <th style="width:22%" class="text-center">Subtotal</th>
+                    <th style="width:10%"></th>
+                </tr>
+            </thead>
+            <tbody>
+               <% cartItems.forEach(item => {%>
+                   
+               
+                <tr>
+                    <td data-th="cartItem">
+                        <div class="row">
+                            <div class="col-sm-2 hidden-xs">
+                                <img style="height: 100px; width: 100px" src="<%=item.item.image%>" alt="..." class="img-responsive" />
+                            </div>
+                            <div class="col-sm-10" style="padding-left: 15%">
+                                <h4 class="nomargin"><%=item.item.name%></h4>
+                                <p></p>
+                            </div>
+                        </div>
+                    </td>
+                    <td data-th="Price">$ <%=item.unitPrice%></td>
+                    <td data-th="Quantity">
+                        <div class="text-center"><%=item.qty%></div>
+                    </td>
+                    <td data-th="Subtotal" class="text-center">$ <%=item.unitPrice*item.qty%></td>
+                    <td class="actions" data-th="">
+                        <form method="POST" action='/api/cart/remove?_method=DELETE'>
+                            <input type="hidden" name="item" value= <%=item._id%>>
+                            
+                            <input type="hidden" name="price" value= <%=item.unitPrice%>>
+                            <input type="hidden" name="qty" value= <%=item.qty%>>
+                            <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
+
+                </tr>
+                <%});%>
+            </tbody>
+            <tfoot>
+
+                <tr>
+                    <td><a href="/" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
+                    <td colspan="2" class="hidden-xs"></td>
+
+                    <td class="hidden-xs text-center"><strong>Total $<%=toprice%></strong></td>
+                    <td><a href="#"><i class="far fa-credit-card fa-3x" data-toggle="modal"
+                                data-target="#exampleModal"></i></a></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Stripe Payment</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <!-- You can make it whatever width you want. I'm making it full width
+                                on <= small devices and 4/12 page width on >= medium devices -->
+                                <div class="col">
+                                   
+                                    <div class="panel panel-default credit-card-box">
+                                        <div class="panel-heading display-table">
+                                            <div class="row display-tr">
+                                                <h3 class="panel-title display-td">Payment Details</h3>
+                                                <div class="display-td">
+                                                    <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <form method="POST" action="/api/cart/payment" role="form" id="payment-form">
+                                                <input type="hidden" name="stripeMoney" value="<%=toprice*100%>">
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        <div class="form-group">
+                                                            <label for="cardNumber">CARD NUMBER</label>
+                                                            <div class="input-group">
+                                                                <input type="tel"
+                                                                id="card-number"
+                                                                 class="form-control" name="cardNumber" placeholder="Valid Card Number"
+                                                                    autocomplete="cc-number" required autofocus />
+                                                                <span class="input-group-addon ml-1"><i class="fa fa-credit-card"></i></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-7 col-md-7">
+                                                        <div class="form-group">
+                                                            <label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span
+                                                                    class="visible-xs-inline">EXP</span> DATE</label>
+                                                            <input type="tel" class="form-control" 
+                                                            id="card-expiry-month-year"
+                                                            name="cardExpiry" placeholder="MM / YY"
+                                                                autocomplete="cc-exp" required />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-5 col-md-5 pull-right">
+                                                        <div class="form-group">
+                                                            <label for="cardCVC">CV CODE</label>
+                                                            <input type="tel" 
+                                                            id="card-cvc"
+                                                            class="form-control" name="cardCVC" placeholder="CVC" autocomplete="cc-csc"
+                                                                required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        <button id="subPay" class="btn btn-success btn-lg btn-block" type="submit">Pay:$<%=toprice%></button>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="display:none;">
+                                                    <div class="col-xs-12">
+                                                        <p id="payment-errors" class="payment-errors"></p>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+</body>
+
+</html>

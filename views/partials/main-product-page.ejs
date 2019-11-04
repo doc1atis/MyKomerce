@@ -1,25 +1,13 @@
 <div class="jumbotron">
     <div class="container">
         <h1 class="display-3 text-center">Best Online Shopping</h1>
+        <form id="myForm" action="/api/products/instant/search" method="GET">
+            <input id="instantBox" type="text" class="form-control mr-ms-2" placeholder="Search" aria-label="Search" name="search_item">
+        </form>
     </div>
 </div>
 
 <div class="row" id="productSearchResults">
-    <% for (let product of products) { %>
-    <div class="col">
-        <div class="card">
-            <a href="/api/products/<%= product._id %>">
-                <img class="card-img-top" src="<%= product.image %>" alt="Card image cap" />
-            </a>
-            <div class="card-body">
-                <h5 class="card-title">Name: <%= product.name %></h5>
-                <p class="card-text">Category: <%= product.category.name %></p>
-                <p class="card-text">$ <%= product.price %></p>
-                <a href="/api/products/<%= product._id %>" class="btn btn-primary">Shop</a>
-            </div>
-        </div>
-    </div>
-    <% } %>
 </div>
 
 <nav aria-label="Page navigation example" class="d-flex justify-content-center">
@@ -48,3 +36,6 @@
 
     </ul>
 </nav>
+<script src="https://code.jquery.com/jquery-3.4.0.js" integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo="
+    crossorigin="anonymous"></script>
+<script src="../../javascripts/instant-search.js"></script>

@@ -1,8 +1,29 @@
 const express = require("express");
+const productController = require("./controllers/productController");
+const Product = require("./models/Product");
+
 const router = express.Router();
 
-const productController = require("./controllers/productController");
+Product.createMapping(function(error, mapping) {
+  if (error) {
+    console.log("failed to create map olgy: ", error);
+  } else {
+    console.log("mapping created olgy");
+    console.log(mapping);
+  }
+});
 
+let stream = Product.synchronize();
+let count = 0;
+stream.on("data", () => {
+  count++;
+});
+stream.on("close", () => {
+  console.log(`Indexed ${count} documents`);
+});
+stream.on("error", error => {
+  console.log("olgy this is stream: ", error);
+});
 router.get("/", (req, res) => {
   productController
     .getAllProducts({})
@@ -39,5 +60,10 @@ router.delete("/deleteproductbyid/:id", (req, res) => {
   const deletedProduct = productController.deleProductById(req.params.id);
   res.send(deletedProduct);
 });
-
+router.get("/search/product", (req, res) => {
+  productController.searchProductByQuery(req, res);
+});
+router.get("/instant/search", (req, res) => {
+  productController.instantSearch(req, res);
+});
 module.exports = router;

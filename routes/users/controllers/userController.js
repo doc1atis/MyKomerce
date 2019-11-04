@@ -21,7 +21,7 @@ module.exports = {
           return res.redirect(301, "/api/users/signup");
         } else {
           const newUser = new User();
-
+          newUser.history = [];
           newUser.email = req.body.email;
           newUser.profile.name = req.body.name;
           newUser.profile.picture = gravatar(newUser.email);

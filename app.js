@@ -19,18 +19,21 @@ const productsRouter = require("./routes/products/products");
 const cartRouter = require("./routes/cart/cart");
 
 const Category = require("./routes/products/models/Category");
-
 require("dotenv").config();
+async function konek() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true
+    });
+    console.log("connected to MONGO DB OLGY");
+  } catch (error) {
+    console.log("there was an error connecting to MONGO DB OLGY: ", error);
+  }
+}
 
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-  })
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(`MongoDB Error: ${err}`));
-
+konek();
 let app = express();
 
 // view engine setup
@@ -50,10 +53,9 @@ app.use(
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET,
     store: new MongoStore({
-      url: process.env.MONGODB_URI,
-      autoReconnect: true,
-      useUnifiedTopology: true,
-      useNewUrlParser: true
+      //url: process.env.MONGODB_URI,
+      mongooseConnection: mongoose.connection,
+      autoReconnect: true
     }),
     cookie: {
       secure: false,
@@ -104,8 +106,6 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   Category.find({})
     .then(categories => {
-      console.log(`res.locals.categories: `);
-
       res.locals.categories = categories;
 
       next();

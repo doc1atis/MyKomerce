@@ -48,5 +48,38 @@ module.exports = {
   getPageIfUserLoggedIn: (req, res, next) => {
     if (req.user) paginate(req, res, next);
     else res.render("index");
+  },
+  searchProductByQuery: (req, res) => {
+    if (req.query.q) {
+      Product.search(
+        { query_string: { query: req.query.q } },
+        (error, result) => {
+          if (error) {
+            let errors = { status: 500, message: error };
+            res.status(errors.status).json(errors);
+          } else {
+            let data = result.hits.hits;
+
+            res.render("search/search-results", { data, word: req.query.q });
+          }
+        }
+      );
+    }
+  },
+  instantSearch: (req, res) => {
+    if (req.query.search_item) {
+      Product.search(
+        {
+          query_string: { query: req.query.search_item }
+        },
+        (error, result) => {
+          if (error) {
+            res.status(500).json(error);
+          } else {
+            res.send(result.hits.hits);
+          }
+        }
+      );
+    }
   }
 };

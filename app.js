@@ -99,6 +99,7 @@ app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.loginMessage = req.flash("loginMessage");
   res.locals.errorValidate = req.flash("errorValidate");
+  res.locals.cartTotal = req.flash("cartTotal");
 
   next();
 });

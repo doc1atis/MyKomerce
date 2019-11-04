@@ -8,6 +8,8 @@ const cartController = require("./controller/cartController");
 const router = express.Router();
 router.get("/", async (req, res) => {
   const cart = await cartController.getUserShoppingCart(req.user._id);
+  if (cart.totalItems === 0) cart.totalItems = null;
+  req.flash("cartTotal", cart.totalItems);
   res.render("cart/cart", { toprice: cart.totalPrice, cartItems: cart.items });
 });
 router.post("/product", async (req, res) => {

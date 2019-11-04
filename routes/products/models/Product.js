@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+require("dotenv").config();
 const mongoosastic = require("mongoosastic");
 const ProductSchema = new mongoose.Schema({
   category: {
@@ -24,7 +25,7 @@ const ProductSchema = new mongoose.Schema({
   }
 });
 ProductSchema.plugin(mongoosastic, {
-  hosts: ["localhost:9200"],
+  hosts: [process.env.BONSAI_URL || "localhoast:9200"],
 
   populate: [{ path: "category" }]
 });
